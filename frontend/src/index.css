@@ -1,0 +1,169 @@
+@import "tailwindcss";
+
+@theme {
+  --color-vet-white: #ffffff;
+  --color-vet-soft: #e0f2fe;
+  --color-vet-mist: #f0f9ff;
+  --color-vet-primary: #38bdf8;
+  --color-vet-dark: #0369a1;
+  --color-vet-ink: #1e293b;
+  --color-vet-muted: #64748b;
+  --font-sans: ui-sans-serif, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+@layer base {
+  html {
+    background-color: var(--color-vet-mist);
+  }
+
+  body {
+    @apply bg-vet-mist text-vet-ink font-sans antialiased;
+    background-image: linear-gradient(180deg, #ffffff 0%, #f0f9ff 45%, #e0f2fe 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+  }
+
+  h1 {
+    @apply text-2xl font-bold text-vet-dark tracking-tight;
+  }
+
+  h2 {
+    @apply text-xl font-semibold text-vet-dark mt-2;
+  }
+
+  h3 {
+    @apply text-base font-semibold text-vet-dark;
+  }
+
+  button {
+    @apply inline-flex items-center justify-center rounded-lg bg-vet-dark px-3 py-1.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-sky-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  button[type="submit"] {
+    @apply bg-vet-primary text-vet-ink hover:bg-sky-300 font-semibold;
+  }
+
+  input,
+  select {
+    @apply mt-1 rounded-lg border border-sky-200 bg-white px-2.5 py-1.5 text-sm text-vet-ink shadow-sm focus:border-vet-primary focus:outline-none focus:ring-2 focus:ring-sky-200;
+  }
+
+  label {
+    @apply text-sm font-medium text-vet-ink;
+  }
+
+  table {
+    @apply w-full overflow-hidden rounded-xl bg-white text-sm shadow-sm;
+    border-collapse: collapse;
+  }
+
+  thead tr {
+    @apply bg-vet-soft text-vet-dark;
+  }
+
+  th,
+  td {
+    @apply border-b border-sky-100 px-3 py-2 text-left;
+  }
+
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  tbody tr:hover {
+    @apply bg-vet-mist;
+  }
+
+  pre {
+    @apply rounded-xl border border-sky-100 bg-white p-3 text-xs shadow-sm overflow-auto;
+  }
+
+  [role="alert"] {
+    @apply mt-3 rounded-lg border border-sky-200 bg-vet-soft px-3 py-2 text-sm font-medium text-vet-dark;
+  }
+}
+
+@layer components {
+  .vet-shell {
+    @apply mx-auto w-full max-w-5xl px-4 py-8;
+  }
+
+  .vet-card {
+    @apply rounded-2xl border border-sky-100 bg-white/90 p-5 shadow-sm backdrop-blur;
+  }
+
+  .vet-header {
+    @apply rounded-2xl border border-sky-100 bg-white/90 p-5 shadow-sm backdrop-blur mb-4 flex flex-col gap-2;
+  }
+
+  .vet-nav {
+    @apply flex flex-wrap gap-2;
+  }
+
+  .vet-nav button {
+    @apply bg-white text-vet-dark border border-sky-200 hover:bg-vet-soft hover:border-sky-300;
+  }
+
+  .vet-subnav {
+    @apply mt-2 flex flex-wrap gap-2;
+  }
+
+  .vet-form {
+    @apply rounded-2xl border border-sky-100 bg-white/90 p-5 shadow-sm backdrop-blur grid gap-3 max-w-2xl;
+  }
+
+  .vet-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(3, 105, 161, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+    padding: 1rem;
+  }
+
+  .vet-modal-negro-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 60;
+    padding: 1rem;
+  }
+
+  .vet-modal-negro-box {
+    @apply w-full max-w-2xl rounded-2xl border border-sky-100 bg-white p-5 shadow-xl;
+    max-height: 85vh;
+    overflow: auto;
+  }
+
+  .vet-modal-box {
+    @apply w-full max-w-xl rounded-2xl border border-sky-100 bg-white p-5 shadow-xl;
+    max-height: 85vh;
+    overflow: auto;
+  }
+
+  .vet-stock-ok {
+    @apply inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-semibold text-emerald-800;
+  }
+
+  .vet-stock-warn {
+    @apply inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-900;
+  }
+
+  .vet-stock-bad {
+    @apply inline-flex items-center gap-1 rounded-full bg-rose-100 px-2 py-0.5 text-xs font-semibold text-rose-800;
+  }
+
+  .vet-swal-negro-overlay {
+    background: rgba(0, 0, 0, 0.7) !important;
+    backdrop-filter: blur(4px);
+  }
+
+  .vet-swal-negro-popup {
+    @apply w-full max-w-md rounded-2xl border border-sky-100 bg-white p-6 shadow-2xl;
+  }
+}
