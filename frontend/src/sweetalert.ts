@@ -16,8 +16,16 @@ export class SweetAlert {
       confirmButtonColor: '#10b981',
       cancelButtonColor: '#ef4444',
       allowOutsideClick: false,
+      customClass: this.customClass(),   // <-- AGREGADO
     });
     return result.isConfirmed;
+  }
+
+  static customClass() {
+    return {
+      confirmButton: 'vet-swal-btn-si',
+      cancelButton: 'vet-swal-btn-no',
+    };
   }
 
   /**
@@ -79,6 +87,7 @@ export class SweetAlert {
       customClass: {
         container: 'vet-swal-negro-overlay',
         popup: 'vet-swal-negro-popup',
+        ...this.customClass(),           // <-- AGREGADO (spread para unir con container/popup)
       },
     });
     return result.isConfirmed;

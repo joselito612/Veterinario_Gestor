@@ -26,6 +26,7 @@ import { scheduleAppointment, checkinAppointment, cancelAppointment, listAppoint
 import { registerPayment, listPayments } from '../services/paymentService.js';
 import { createDraft, setDraftItems, getAttention, listAttentions, closeAttention, annulAttention } from '../services/attentionService.js';
 import { listAudit } from '../repositories/audit.js';
+import { listMovimientos } from '../services/movementService.js';
 import { can } from '../domain/permissions.js';
 import type { AuthUser } from '../domain/types.js';
 
@@ -339,6 +340,17 @@ export function buildApp(pool: DbPool) {
       const body = parseZod(paymentSchema, req.body);
       const created = await registerPayment(pool, req.user as AuthUser, body);
       res.status(201).json(created);
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  app.get('/movimientos', auth, async (req: any, res, next) => {
+    try {
+      const from = typeof req.query.from === 'string' ? req.query.from : undefined;
+      const to = typeof req.query.to === 'string' ? req.query.to : undefined;
+      const productId = typeof req.query.productId === 'string' ? req.query.productId : undefined;
+      res.json(await listMovimientos(pool, req.user as AuthUser, from, to, productId));
     } catch (err) {
       next(err);
     }

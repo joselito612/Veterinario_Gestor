@@ -15,7 +15,8 @@ export type Action =
   | 'appointments.checkin'
   | 'payments.write'
   | 'payments.read'
-  | 'audit.read';
+  | 'audit.read'
+  | 'movements.read';
 
 const adminOnly: Action[] = [
   'users.manage',
@@ -31,6 +32,7 @@ const adminOnly: Action[] = [
 
 const vetAllowed: Action[] = [
   'products.read',
+  'movements.read',
   'patients.write',
   'patients.read',
   'clients.read',

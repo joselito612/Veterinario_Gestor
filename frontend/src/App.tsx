@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { api, login } from './api.js';
 import { SweetAlert } from './sweetalert.js';
+import { Dashboard } from './components/dashboard/Dashboard.js';
 
 type Session = { token: string; name: string; role: string };
 type Patient = { id: string; name: string; species: string };
@@ -22,7 +23,7 @@ type Attention = {
 type Client = { id: string; name: string; rut: string; phone: string; email: string };
 type Appointment = { id: string; patient_id: string; scheduled_at: string; reason: string; status: string };
 
-type Tab = 'productos' | 'pacientes' | 'atenciones' | 'clientes' | 'citas' | 'pagos' | 'auditoria';
+type Tab = 'productos' | 'pacientes' | 'atenciones' | 'clientes' | 'citas' | 'pagos' | 'auditoria' | 'dashboard';
 type Sub = 'registrar' | 'listar';
 
 export default function App() {
@@ -57,6 +58,8 @@ export default function App() {
   const [pendienteReceta, setPendienteReceta] = useState<RecetaItem | null>(null);
   const [exitoCierre, setExitoCierre] = useState<string | null>(null);
   const [fichaExpandida, setFichaExpandida] = useState<string | null>(null);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const navRef = useRef<HTMLDivElement>(null);
 
   const [clientes, setClientes] = useState<Client[]>([]);
   const [cliNombre, setCliNombre] = useState('');
@@ -182,6 +185,25 @@ export default function App() {
     if (tab === 'clientes' || tab === 'citas' || tab === 'pagos') void cargarAdmin();
     if (tab === 'pacientes' && session.role === 'ADMIN') void cargarAdmin();
   }, [session, tab]);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (navRef.current && !navRef.current.contains(e.target as Node)) {
+        setOpenDropdown(null);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  function toggleDropdown(modulo: string) {
+    setOpenDropdown((prev) => (prev === modulo ? null : modulo));
+  }
+
+  function elegirOpcion(modulo: Tab, sub: Sub | undefined) {
+    setOpenDropdown(null);
+    irTab(modulo, sub);
+  }
 
   function confirmarAgregarItem(item: RecetaItem) {
     setReceta((prev) => {
@@ -569,30 +591,209 @@ export default function App() {
       <div className="vet-header">
       <h1>Gestión veterinaria</h1>
       <p className="text-sm text-slate-600">Bienvenido, {session.name} ({session.role}).</p>
-      <nav className="vet-nav">
-        <button onClick={() => irTab('productos')}>Productos</button>
-        <button onClick={() => irTab('pacientes')}>Pacientes</button>
-        <button onClick={() => irTab('atenciones')}>Atenciones</button>
-        {esAdmin && <button onClick={() => irTab('clientes')}>Clientes</button>}
-        {esAdmin && <button onClick={() => irTab('citas')}>Citas</button>}
-        {esAdmin && <button onClick={() => irTab('pagos')}>Pagos</button>}
-        {esAdmin && <button onClick={() => irTab('auditoria')}>Auditoría</button>}
+      <nav className="vet-nav" ref={navRef}>
+        <div className="relative group">
+          <button
+            onClick={() => toggleDropdown('productos')}
+            className={`vet-nav-dropdown-trigger ${openDropdown === 'productos' ? 'bg-vet-soft border-sky-300' : ''}`}
+          >
+            Productos <span>{openDropdown === 'productos' ? '▲' : '▼'}</span>
+          </button>
+          {openDropdown === 'productos' && (
+            <div className="vet-nav-dropdown-menu">
+              {esAdmin && (
+                <button
+                  onClick={() => elegirOpcion('productos', 'registrar')}
+                  className="vet-nav-dropdown-item"
+                >
+                  Registrar producto
+                </button>
+              )}
+              <button
+                onClick={() => elegirOpcion('productos', 'listar')}
+                className="vet-nav-dropdown-item"
+              >
+                Listar productos
+              </button>
+            </div>
+          )}
+        </div>
+
+        <div className="relative group">
+          <button
+            onClick={() => toggleDropdown('pacientes')}
+            className={`vet-nav-dropdown-trigger ${openDropdown === 'pacientes' ? 'bg-vet-soft border-sky-300' : ''}`}
+          >
+            Pacientes <span>{openDropdown === 'pacientes' ? '▲' : '▼'}</span>
+          </button>
+          {openDropdown === 'pacientes' && (
+            <div className="vet-nav-dropdown-menu">
+              {esAdmin && (
+                <button
+                  onClick={() => elegirOpcion('pacientes', 'registrar')}
+                  className="vet-nav-dropdown-item"
+                >
+                  Registrar mascota
+                </button>
+              )}
+              <button
+                onClick={() => elegirOpcion('pacientes', 'listar')}
+                className="vet-nav-dropdown-item"
+              >
+                Listar pacientes
+              </button>
+            </div>
+          )}
+        </div>
+
+        <div className="relative group">
+          <button
+            onClick={() => toggleDropdown('atenciones')}
+            className={`vet-nav-dropdown-trigger ${openDropdown === 'atenciones' ? 'bg-vet-soft border-sky-300' : ''}`}
+          >
+            Atenciones <span>{openDropdown === 'atenciones' ? '▲' : '▼'}</span>
+          </button>
+          {openDropdown === 'atenciones' && (
+            <div className="vet-nav-dropdown-menu">
+              <button
+                onClick={() => elegirOpcion('atenciones', 'registrar')}
+                className="vet-nav-dropdown-item"
+              >
+                Registrar atención
+              </button>
+              <button
+                onClick={() => elegirOpcion('atenciones', 'listar')}
+                className="vet-nav-dropdown-item"
+              >
+                Listar atenciones
+              </button>
+            </div>
+          )}
+        </div>
+
+        {esAdmin && (
+          <div className="relative group">
+            <button
+              onClick={() => toggleDropdown('clientes')}
+              className={`vet-nav-dropdown-trigger ${openDropdown === 'clientes' ? 'bg-vet-soft border-sky-300' : ''}`}
+            >
+              Clientes <span>{openDropdown === 'clientes' ? '▲' : '▼'}</span>
+            </button>
+            {openDropdown === 'clientes' && (
+              <div className="vet-nav-dropdown-menu">
+                <button
+                  onClick={() => elegirOpcion('clientes', 'registrar')}
+                  className="vet-nav-dropdown-item"
+                >
+                  Registrar cliente
+                </button>
+                <button
+                  onClick={() => elegirOpcion('clientes', 'listar')}
+                  className="vet-nav-dropdown-item"
+                >
+                  Listar clientes
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
+        {esAdmin && (
+          <div className="relative group">
+            <button
+              onClick={() => toggleDropdown('citas')}
+              className={`vet-nav-dropdown-trigger ${openDropdown === 'citas' ? 'bg-vet-soft border-sky-300' : ''}`}
+            >
+              Citas <span>{openDropdown === 'citas' ? '▲' : '▼'}</span>
+            </button>
+            {openDropdown === 'citas' && (
+              <div className="vet-nav-dropdown-menu">
+                <button
+                  onClick={() => elegirOpcion('citas', 'registrar')}
+                  className="vet-nav-dropdown-item"
+                >
+                  Agendar cita
+                </button>
+                <button
+                  onClick={() => elegirOpcion('citas', 'listar')}
+                  className="vet-nav-dropdown-item"
+                >
+                  Listar citas
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
+        {esAdmin && (
+          <div className="relative group">
+            <button
+              onClick={() => toggleDropdown('pagos')}
+              className={`vet-nav-dropdown-trigger ${openDropdown === 'pagos' ? 'bg-vet-soft border-sky-300' : ''}`}
+            >
+              Pagos <span>{openDropdown === 'pagos' ? '▲' : '▼'}</span>
+            </button>
+            {openDropdown === 'pagos' && (
+              <div className="vet-nav-dropdown-menu">
+                <button
+                  onClick={() => elegirOpcion('pagos', 'registrar')}
+                  className="vet-nav-dropdown-item"
+                >
+                  Registrar pago
+                </button>
+                <button
+                  onClick={() => elegirOpcion('pagos', 'listar')}
+                  className="vet-nav-dropdown-item"
+                >
+                  Listar pagos
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
+        {esAdmin && (
+          <div className="relative group">
+            <button
+              onClick={() => toggleDropdown('auditoria')}
+              className={`vet-nav-dropdown-trigger ${openDropdown === 'auditoria' ? 'bg-vet-soft border-sky-300' : ''}`}
+            >
+              Auditoría <span>{openDropdown === 'auditoria' ? '▲' : '▼'}</span>
+            </button>
+            {openDropdown === 'auditoria' && (
+              <div className="vet-nav-dropdown-menu">
+                <button
+                  onClick={() => elegirOpcion('auditoria', undefined)}
+                  className="vet-nav-dropdown-item"
+                >
+                  Ver auditoría
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
+        <div className="relative group">
+          <button
+            onClick={() => toggleDropdown('dashboard')}
+            className={`vet-nav-dropdown-trigger ${openDropdown === 'dashboard' ? 'bg-vet-soft border-sky-300' : ''}`}
+          >
+            Dashboard <span>{openDropdown === 'dashboard' ? '▲' : '▼'}</span>
+          </button>
+          {openDropdown === 'dashboard' && (
+            <div className="vet-nav-dropdown-menu">
+              <button
+                onClick={() => elegirOpcion('dashboard', undefined)}
+                className="vet-nav-dropdown-item"
+              >
+                Ver panel de control
+              </button>
+            </div>
+          )}
+        </div>
+
         <button onClick={cerrarSesion}>Cerrar sesión</button>
       </nav>
-      {tab !== 'auditoria' && (
-        <nav className="vet-subnav">
-          {(esAdmin || tab === 'atenciones') && (
-            <>
-              <button onClick={() => setSub('registrar')} disabled={sub === 'registrar'}>
-                Registrar {tab === 'productos' ? 'producto' : tab === 'pacientes' ? 'mascota' : tab === 'atenciones' ? 'atención' : tab === 'clientes' ? 'cliente' : tab === 'citas' ? 'cita' : 'pago'}
-              </button>{' '}
-            </>
-          )}
-          <button onClick={() => setSub('listar')} disabled={sub === 'listar'}>
-            Listar {tab === 'productos' ? 'productos' : tab === 'pacientes' ? 'pacientes' : tab === 'atenciones' ? 'atenciones' : tab === 'clientes' ? 'clientes' : tab === 'citas' ? 'citas' : 'pagos'}
-          </button>
-        </nav>
-      )}
       {mensaje && <p role="alert">{mensaje}</p>}
       </div>
 
@@ -677,7 +878,7 @@ export default function App() {
                         <td>{p.owner_name}</td>
                         <td>{p.owner_rut}</td>
                         {esAdmin && (
-                          <td><button onClick={() => editarPaciente(p)}>Editar</button></td>
+                          <td><button onClick={() => editarPaciente(p)}>✏️ Editar</button></td>
                         )}
                       </tr>
                     ))}
@@ -697,8 +898,8 @@ export default function App() {
                   <label>Edad<input type="number" min={0} value={epEdad} onChange={(e) => setEpEdad(Number(e.target.value))} style={{ display: 'block', width: '100%' }} /></label>
                   <label>Peso<input type="number" min={0} value={epPeso} onChange={(e) => setEpPeso(Number(e.target.value))} style={{ display: 'block', width: '100%' }} /></label>
                   <div>
-                    <button onClick={guardarPaciente}>Guardar cambios</button>{' '}
-                    <button onClick={limpiarPac}>Cancelar</button>
+                    <button onClick={guardarPaciente} className="vet-btn-success">Guardar cambios</button>{' '}
+                    <button onClick={limpiarPac} className="vet-btn-secondary">Cancelar</button>
                   </div>
                 </div>
               </div>
@@ -740,8 +941,8 @@ export default function App() {
                   </>
                 )}
                 <div>
-                  <button onClick={guardarProducto}>Agregar producto</button>{' '}
-                  <button onClick={limpiarProd}>Limpiar</button>
+                  <button onClick={guardarProducto} className="vet-btn-success">Agregar producto</button>{' '}
+                  <button onClick={limpiarProd} className="vet-btn-secondary">Limpiar</button>
                 </div>
               </div>
             </div>
@@ -760,7 +961,7 @@ export default function App() {
                 <label>Buscar por nombre o código de barras
                   <input value={busProd} onChange={(e) => setBusProd(e.target.value)} placeholder="Nombre o código de barras" style={{ display: 'block', width: 320 }} />
                 </label>
-                <button onClick={() => setFiltroProd(busProd)}>Buscar</button>{' '}
+                <button onClick={() => setFiltroProd(busProd)}>🔍 Buscar</button>{' '}
                 <button onClick={cargarProductos}>Recargar lista</button>
               </div>
               {productosFiltrados().length === 0 && <p>Sin productos para los filtros indicados.</p>}
@@ -788,8 +989,8 @@ export default function App() {
                         <td><span className={p.is_active ? 'vet-stock-ok' : 'vet-stock-bad'}>{p.is_active ? 'Activo' : 'Inactivo'}</span></td>
                         {esAdmin && (
                           <td>
-                            <button onClick={() => editarProducto(p)}>Editar</button>{' '}
-                            {p.is_active && <button onClick={() => bajaProducto(p.id, p.name)}>Eliminar</button>}
+                            <button onClick={() => editarProducto(p)}>✏️ Editar</button>{' '}
+                            {p.is_active && <button onClick={() => bajaProducto(p.id, p.name)} className="vet-btn-danger">🗑️ Eliminar</button>}
                           </td>
                         )}
                       </tr>
@@ -830,8 +1031,8 @@ export default function App() {
                     </>
                   )}
                   <div>
-                    <button onClick={guardarProducto}>Guardar cambios</button>{' '}
-                    <button onClick={limpiarProd}>Cancelar</button>
+                    <button onClick={guardarProducto} className="vet-btn-success">Guardar cambios</button>{' '}
+                    <button onClick={limpiarProd} className="vet-btn-secondary">Cancelar</button>
                   </div>
                 </div>
               </div>
@@ -897,7 +1098,7 @@ export default function App() {
                             ? <span className="vet-stock-bad">Sin stock: quedará registrado para compra externa</span>
                             : <span className="vet-stock-ok">Disponible</span>}
                         </td>
-                        <td><button onClick={() => setReceta((prev) => prev.filter((x) => x.productId !== r.productId))}>Quitar</button></td>
+                        <td><button onClick={() => setReceta((prev) => prev.filter((x) => x.productId !== r.productId))} className="vet-btn-danger">🗑️ Quitar</button></td>
                       </tr>
                     );
                   })}
@@ -937,8 +1138,8 @@ export default function App() {
                         <td><span className={est.clase}>{est.texto}</span></td>
                         <td>{a.diagnosis || '—'}</td>
                         <td>
-                          <button onClick={() => verDetalle(a.id)}>Ver detalle</button>{' '}
-                          {esAdmin && a.status === 'CERRADA' && <button onClick={() => anular(a.id)}>Anular</button>}
+                          <button onClick={() => verDetalle(a.id)}>👁️ Ver detalle</button>{' '}
+                          {esAdmin && a.status === 'CERRADA' && <button onClick={() => anular(a.id)} className="vet-btn-danger">❌ Anular</button>}
                         </td>
                       </tr>
                     );
@@ -955,8 +1156,8 @@ export default function App() {
                 <h3>Sin stock suficiente</h3>
                 <p>Sin stock suficiente: quedará registrado para compra externa.</p>
                 <div>
-                  <button onClick={() => { confirmarAgregarItem(pendienteReceta); setPendienteReceta(null); }}>Aceptar</button>{' '}
-                  <button onClick={() => setPendienteReceta(null)}>Cancelar</button>
+                  <button onClick={() => { confirmarAgregarItem(pendienteReceta); setPendienteReceta(null); }} className="vet-btn-success">Aceptar</button>{' '}
+                  <button onClick={() => setPendienteReceta(null)} className="vet-btn-secondary">Cancelar</button>
                 </div>
               </div>
             </div>
@@ -968,7 +1169,7 @@ export default function App() {
                 <h3>Atención cerrada correctamente</h3>
                 <p>{exitoCierre}</p>
                 <div>
-                  <button onClick={() => setExitoCierre(null)}>Aceptar</button>
+                  <button onClick={() => setExitoCierre(null)} className="vet-btn-success">Aceptar</button>
                 </div>
               </div>
             </div>
@@ -1042,7 +1243,7 @@ export default function App() {
                   </tbody>
                 </table>
                 <div style={{ marginTop: 16, display: 'flex', justifyContent: 'flex-end' }}>
-                  <button onClick={() => setDetalle(null)}>Cerrar</button>
+                  <button onClick={() => setDetalle(null)} className="vet-btn-secondary">Cerrar</button>
                 </div>
               </div>
             </div>
@@ -1207,8 +1408,8 @@ export default function App() {
                         <td>{c.phone}</td>
                         <td>{c.email}</td>
                         <td>
-                          <button onClick={() => { setCliSel(c.id); void verClientePara(c.id); }}>Ver mascotas</button>{' '}
-                          <button onClick={() => editarCliente(c)}>Editar</button>
+                          <button onClick={() => { setCliSel(c.id); void verClientePara(c.id); }}>👁️ Ver mascotas</button>{' '}
+                          <button onClick={() => editarCliente(c)}>✏️ Editar</button>
                         </td>
                       </tr>
                     ))}
@@ -1229,8 +1430,8 @@ export default function App() {
                   <label>Teléfono<input value={ecTelefono} onChange={(e) => setEcTelefono(e.target.value)} style={{ display: 'block', width: '100%' }} /></label>
                   <label>Correo<input value={ecEmail} onChange={(e) => setEcEmail(e.target.value)} style={{ display: 'block', width: '100%' }} /></label>
                   <div>
-                    <button onClick={guardarCliente}>Guardar cambios</button>{' '}
-                    <button onClick={limpiarCli}>Cancelar</button>
+                    <button onClick={guardarCliente} className="vet-btn-success">Guardar cambios</button>{' '}
+                    <button onClick={limpiarCli} className="vet-btn-secondary">Cancelar</button>
                   </div>
                 </div>
               </div>
@@ -1276,7 +1477,7 @@ export default function App() {
                         <td>{c.status}</td>
                         <td>
                           {c.status === 'PROGRAMADA' && <button onClick={() => checkin(c.id)}>Check-in</button>}{' '}
-                          {(c.status === 'PROGRAMADA' || c.status === 'REGISTRADA') && <button onClick={() => cancelarCita(c.id)}>Cancelar</button>}
+                          {(c.status === 'PROGRAMADA' || c.status === 'REGISTRADA') && <button onClick={() => cancelarCita(c.id)} className="vet-btn-danger">❌ Cancelar</button>}
                         </td>
                       </tr>
                     ))}
@@ -1339,6 +1540,10 @@ export default function App() {
             </div>
           )}
         </section>
+      )}
+
+      {tab === 'dashboard' && (
+        <Dashboard token={session!.token} />
       )}
     </main>
   );

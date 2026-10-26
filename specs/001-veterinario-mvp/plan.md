@@ -14,6 +14,7 @@
 | Navegación y gestión en frontend | Submenús Registrar/Listar por módulo, tablas con búsqueda y filtros, ventana de modificación y baja con confirmación según rol. | RF-11 |
 | Listado de productos por categoría con stock | Filtrado de productos por categoría cerrada con indicador de disponibilidad de stock. | RF-13 |
 | Ventanas emergentes con SweetAlert2 | Diálogos de confirmación, aviso y éxito con SweetAlert2 en productos, atenciones, mascotas y cierre de sesión. | RF-15 |
+| Panel de control y métricas (Dashboard) | Tarjetas de métricas y gráficos con Recharts: distribución por categoría, mayor y menor stock, evolución de entradas y salidas, productos próximos a agotarse. | RF-16 |
 
 ## Secuencia de trabajo
 1. Definir los roles, permisos y el ciclo de vida de usuarios y atenciones. RF-1, RF-4, RF-5.
@@ -26,6 +27,7 @@
 8. Implementar consulta de auditoría y comprobación transversal de permisos. RF-1, RF-6.
 9. Ejecutar pruebas unitarias, de integración y de aceptación por cada RF. RF-1 a RF-6.
 10. Implementar ventanas emergentes con SweetAlert2 (confirmar agregar producto, receta sin medicamentos, cerrar receta, registro de mascota con aviso de campo faltante, cerrar sesión con layout negro). RF-15.
+11. Implementar el módulo Dashboard con su sección de navegación, tarjetas de métricas y los cuatro gráficos con Recharts. RF-16.
 
 ## Modelo de datos
 | Entidad | Datos y restricciones principales | RF cubiertos |

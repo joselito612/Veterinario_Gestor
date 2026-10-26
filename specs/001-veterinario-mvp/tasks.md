@@ -143,3 +143,19 @@ Todas las tareas están estimadas en menos de 30 minutos. Cada tarea de comporta
   Hecho cuando: al pulsar «Cerrar sesión» se abre una ventana emergente con fondo negro (overlay oscuro) que bloquea toda interacción, botones Sí y No, y al confirmar se cierra la sesión; al cancelar la sesión permanece activa.
 - [x] T57 · Reemplazar diálogos nativos (`window.confirm` / `alert`) por SweetAlert2 en todo el frontend. RF-15.
   Hecho cuando: el frontend no usa `window.confirm` ni `alert`; todas las confirmaciones, avisos y éxitos usan SweetAlert2 con mensajes en español.
+
+## Panel de control y métricas (Dashboard) (nuevo)
+- [x] T58 · Instalar recharts en el frontend. RF-16.
+  Hecho cuando: la dependencia `recharts` está registrada en `frontend/package.json` y se puede importar en el frontend.
+- [x] T59 · Agregar sección Dashboard a la navegación principal. RF-16.
+  Hecho cuando: la navegación muestra una sección «Dashboard» al mismo nivel que Productos, Atenciones, Pagos, Clientes, Citas y Auditoría, y abrirla renderiza la vista del panel de control.
+- [x] T60 · Tarjetas de métricas del Dashboard. RF-16.
+  Hecho cuando: el panel muestra tarjetas con valor total del inventario, cantidad de productos con stock bajo o crítico y total de atenciones del mes.
+- [x] T61 · Gráfico de distribución de unidades por categoría (PieChart). RF-16.
+  Hecho cuando: un gráfico circular agrupa las unidades en stock por categoría (alimento, medicamento y accesorio) y se verifica con una prueba de renderizado de datos.
+- [x] T62 · Gráfico de productos con mayor y menor stock (BarChart). RF-16.
+  Hecho cuando: un gráfico de barras ordena productos por stock actual y muestra los de mayor y menor existencia.
+- [x] T63 · Gráfico de evolución de entradas y salidas (LineChart / AreaChart). RF-16.
+  Hecho cuando: un gráfico de líneas muestra la variación de unidades de inventario por fecha (entradas y salidas) en un rango de tiempo.
+- [x] T64 · Gráfico de productos próximos a agotarse. RF-16.
+  Hecho cuando: un gráfico de barras lista productos cuyo stock actual está cerca o por debajo del stock mínimo definido.

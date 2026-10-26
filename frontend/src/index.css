@@ -11,6 +11,19 @@
   --font-sans: ui-sans-serif, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
+/* Botón "Sí" (confirmar) */
+.swal2-confirm.vet-swal-btn-si {
+  padding: 12px 48px !important;
+  font-size: 16px !important;
+}
+
+/* Botón "No" (cancelar) */
+.swal2-cancel.vet-swal-btn-no {
+  padding: 12px 48px !important;
+  font-size: 1rem !important;
+}
+
+
 @layer base {
   html {
     background-color: var(--color-vet-mist);
@@ -80,6 +93,19 @@
 
   [role="alert"] {
     @apply mt-3 rounded-lg border border-sky-200 bg-vet-soft px-3 py-2 text-sm font-medium text-vet-dark;
+  }
+
+  /* Botones semánticos por intención de acción */
+  .vet-btn-danger {
+    @apply inline-flex items-center justify-center rounded-lg bg-rose-600 px-3 py-1.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-rose-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-400 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .vet-btn-secondary {
+    @apply inline-flex items-center justify-center rounded-lg bg-slate-100 px-3 py-1.5 text-sm font-medium text-vet-ink shadow-sm transition-colors hover:bg-slate-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .vet-btn-success {
+    @apply inline-flex items-center justify-center rounded-lg bg-emerald-600 px-3 py-1.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-emerald-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400 disabled:opacity-50 disabled:cursor-not-allowed;
   }
 }
 
@@ -165,5 +191,30 @@
 
   .vet-swal-negro-popup {
     @apply w-full max-w-md rounded-2xl border border-sky-100 bg-white p-6 shadow-2xl;
+  }
+
+  /* Menús desplegables de navegación */
+  .vet-nav-dropdown-trigger {
+    @apply flex items-center gap-1;
+  }
+
+  .vet-nav-dropdown-menu {
+    @apply absolute z-50 mt-1 w-48 rounded-xl border border-sky-100 bg-white/95 shadow-xl backdrop-blur p-1.5;
+    animation: vet-fade-in 0.15s ease-out;
+  }
+
+  .vet-nav-dropdown-item {
+    @apply flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-vet-ink transition-colors hover:bg-vet-soft hover:text-vet-dark cursor-pointer;
+  }
+
+  @keyframes vet-fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 }

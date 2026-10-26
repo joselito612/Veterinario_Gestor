@@ -13,7 +13,7 @@ El objetivo principal es resolver problemas operativos reales de una clínica ve
 * **Core:** React 18+ con TypeScript (`.tsx`).
 * **Estilos y Componentes:** Tailwind CSS + UI Framework (ej. shadcn/ui o Lucide React para iconografía).
 * **Gestión de Estado y Data Fetching:** React Context API / Zustand / TanStack Query (React Query).
-* **Visualización de Datos / Gráficos:** Recharts o Chart.js.
+* **Visualización de Datos / Gráficos:** Recharts (componentes declarativos para React: PieChart, BarChart, LineChart, etc.).
 * **Exportación de Datos:** `xlsx` (SheetJS) para reportes en Excel, `@react-pdf/renderer` o `jspdf` para fichas/reportes PDF.
 
 ### Backend / Persistencia (Inicial / Mock / API)
@@ -36,9 +36,11 @@ El objetivo principal es resolver problemas operativos reales de una clínica ve
   * Alerta de capital en riesgo (productos próximos a vencer dentro del mes).
   * Total de atenciones/consultas médicas del mes.
   * Cantidad de productos con stock crítico.
-* **Gráficos:**
-  * Top 5 productos con mayor rotación/consumo.
-  * Distribución de inventario por categoría.
+* **Gráficos (generados con Recharts):**
+  * Distribución de unidades por categoría (gráfico circular).
+  * Productos con mayor y menor stock (gráfico de barras).
+  * Evolución de entradas y salidas (gráfico de líneas o de área).
+  * Productos próximos a agotarse (gráfico de barras).
 * **Cajas de Notificación de Stock:**
   * Componente visual destacado con alertas dinámicas cuando un producto alcance su nivel de stock mínimo.
 

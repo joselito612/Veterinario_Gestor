@@ -10,6 +10,7 @@ MVP de atención e inventario: pacientes, productos, cierre atómico con descuen
 | React | ^18.3.1 | Interfaz de usuario |
 | React DOM | ^18.3.1 | Renderizado en DOM |
 | SweetAlert2 | ^11.26.25 | Ventanas emergentes de confirmación, aviso y éxito |
+| Recharts | ^2.x | Gráficos del panel de control (Dashboard) |
 | Tailwind CSS | ^4.3.3 | Framework de estilos (temática pastel veterinaria) |
 | TypeScript | ^5.4.5 | Tipado estático |
 | Vite | ^5.3.0 | Servidor de desarrollo y bundler |

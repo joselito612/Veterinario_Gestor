@@ -1,11 +1,12 @@
 # Especificación: MVP de atención e inventario veterinario
 
 ## Contexto y objetivo
-Una clínica necesita registrar clientes y pacientes, controlar sus insumos y conservar trazabilidad de cada atención, cita y pago. El MVP permite gestionar pacientes y productos, cerrar atenciones con receta registrada en la ficha con descuento parcial hasta agotar stock desde el rol veterinario, y anularlas sin perder el historial. La operación diaria del administrador agrega agenda de citas con check-in e historial de pagos por cita.
+Una clínica necesita registrar clientes y pacientes, controlar sus insumos y conservar trazabilidad de cada atención, cita y pago. El MVP permite gestionar pacientes y productos, cerrar atenciones con receta registrada en la ficha con descuento parcial hasta agotar stock desde el rol veterinario, y anularlas sin perder el historial. La operación diaria del administrador agrega agenda de citas con check-in e historial de pagos por cita. Incluye un módulo de Dashboard con métricas y gráficos del inventario y las atenciones.
 
 ## Usuarios
 - Administrador: registra clientes y mascotas, modifica sus datos básicos, agenda citas, realiza el check-in, crea, cierra y anula atenciones desde el frontend web conectado a la API, incluyendo consumo interno de insumos; consulta la ficha con historial clínico y el historial de pagos por cita; y consulta la auditoría.
 - Veterinario: registra pacientes, crea y cierra atenciones asignando receta desde el frontend web conectado a la API, y consulta la disponibilidad de inventario solo para informar, sin descontar stock.
+- Ambos roles: pueden consultar el módulo Dashboard (solo lectura de métricas y gráficos).
 
 ## Historias de usuario
 - Como administrador, quiero registrar y mantener productos con sus datos comerciales para conocer el stock disponible antes de una atención.
@@ -19,6 +20,11 @@ Una clínica necesita registrar clientes y pacientes, controlar sus insumos y co
 - Como administrador, quiero agendar citas y realizar el check-in para controlar la asistencia diaria.
 - Como administrador, quiero ver el historial de la mascota y su historial de pagos por cita para informar al tutor.
 - Como administrador, quiero consultar la auditoría para conocer quién realizó cada acción relevante.
+- Como administrador o veterinario, quiero consultar un panel de control con métricas clave del inventario (valor total, productos con stock crítico, atenciones del mes) para supervisar el negocio de un vistazo.
+- Como administrador o veterinario, quiero ver la distribución de unidades de stock por categoría en un gráfico para conocer la composición del inventario.
+- Como administrador o veterinario, quiero ver los productos con mayor y menor stock en un gráfico de barras para identificar inventario sobrante y faltante.
+- Como administrador o veterinario, quiero ver la evolución de entradas y salidas de unidades en el tiempo para analizar el movimiento de inventario.
+- Como administrador o veterinario, quiero ver los productos próximos a agotarse para planificar compras y reposiciones.
 
 ## Requisitos funcionales
 ### RF-1. Autenticación y acceso
@@ -157,6 +163,16 @@ Una clínica necesita registrar clientes y pacientes, controlar sus insumos y co
 - RF-15.9: Todas las ventanas emergentes de SweetAlert2 presentarán mensajes en español, con botones Sí/No o Aceptar/Cancelar según corresponda, y respetarán la temática pastel veterinaria definida en RF-12, para mantener consistencia visual y lingüística.
 - RF-15.10: El sistema proporcionará una utilidad reutilizable para mostrar ventanas emergentes de SweetAlert2 con mensajes genéricos que admitan texto dinámico, para evitar redefinir los diálogos en cada llamada y mantener la mantenibilidad.
 
+### RF-16. Panel de control (Dashboard) con gráficos de inventario y atenciones
+- Cuando un usuario autenticado acceda al módulo Dashboard, el sistema deberá mostrar un panel de métricas con tarjetas de resumen y gráficos generados con Recharts.
+- El módulo Dashboard deberá tener su propia sección en la navegación principal, al mismo nivel que Productos, Atenciones, Pagos, Clientes, Citas y Auditoría, respetando los permisos del rol autenticado.
+- Tarjetas de métricas: valor total del inventario, cantidad de productos con stock bajo o crítico, total de atenciones del mes y demás métricas de resumen del inventario.
+- Gráfico de distribución de unidades por categoría: gráfico circular que agrupa las unidades en stock por categoría (alimento, medicamento y accesorio), usando varios colores distinguibles dentro de la paleta veterinaria para que cada sector (categoría) sea fácil de identificar y el usuario no se confunda visualmente al revisar el dashboard.
+- Gráfico de productos con mayor y menor stock: gráfico de barras que ordena los productos por stock actual, mostrando los de mayor y menor existencia.
+- Gráfico de evolución de entradas y salidas: gráfico de líneas o de área que muestra la variación de unidades de inventario por fecha (entradas y salidas) en un rango de tiempo.
+- Gráfico de productos próximos a agotarse: gráfico de barras con productos cuyo stock actual está cerca o por debajo del stock mínimo definido.
+- Los gráficos y métricas del Dashboard son de solo lectura y no permiten modificar datos de inventario ni de atenciones.
+
 ## Requisitos no funcionales
 - El sistema deberá presentar mensajes y validaciones en español claro, incluidos los avisos de receta sin stock.
 - El sistema deberá impedir registros inconsistentes, en particular stock negativo y consumos parciales al cerrar una atención con consumo interno de administrador; la receta del veterinario descuenta hasta el stock disponible sin dejarlo negativo y registra el faltante externo.
@@ -193,7 +209,6 @@ Una clínica necesita registrar clientes y pacientes, controlar sus insumos y co
 - Si el usuario cancela la ventana emergente de «¿Desea cerrar sesión?», la sesión permanece activa y no se navega al login.
 
 ## Fuera de alcance
-- Panel de métricas, gráficos y alertas de vencimiento.
 - Exportación de inventario, ficha clínica, receta, agenda o auditoría.
 - Gestión de proveedores, compras y lotes.
 - Eliminación definitiva de clientes, productos, pacientes, atenciones, citas, pagos o eventos de auditoría.
@@ -226,6 +241,7 @@ Una clínica necesita registrar clientes y pacientes, controlar sus insumos y co
 - Al pulsar «Cerrar sesión», el sistema muestra SweetAlert2 con fondo negro que bloquea toda interacción y botones Sí/No; cierra la sesión solo al elegir Sí.
 - Varias ventanas emergentes derivadas de una misma acción se muestran en secuencia, una tras otra, sin omitir ninguna.
 - Todas las ventanas emergentes usan SweetAlert2, presentan mensajes en español con botones Sí/No o Aceptar/Cancelar, respetan la temática pastel veterinaria y el frontend ya no depende de `window.confirm` ni `alert`.
+- Un usuario autenticado puede acceder al módulo Dashboard desde su propia sección de navegación y visualiza tarjetas de métricas y los cuatro gráficos requeridos (distribución de unidades por categoría, productos con mayor y menor stock, evolución de entradas y salidas, y productos próximos a agotarse) generados con Recharts.
 
 ## Decisiones adoptadas
 - El tipo de producto es la clasificación principal con valores cerrados alimento, medicamento o accesorio; la categoría pasa a texto descriptivo opcional y el SKU actual de la API corresponde al código de barras único.
@@ -245,3 +261,5 @@ Una clínica necesita registrar clientes y pacientes, controlar sus insumos y co
 - El listado de productos se filtra por categoría cerrada (medicamento, accesorio, alimento para animales) y cada producto muestra su disponibilidad de stock (disponible, bajo stock o sin stock); cuando no hay productos activos en la categoría se muestra tabla vacía con aviso, sin error.
 - El script de datos de ejemplo se mantiene como un archivo SQL independiente (`backend/src/db/seed_data.sql`) ejecutado explícitamente por el administrador tras aplicar las migraciones, no como parte del arranque automático de `initDatabase`, para evitar poblar la base sin intención.
 - El frontend usa SweetAlert2 como única librería de ventanas emergentes (confirmaciones, avisos y éxito) en todos los módulos, sustituyendo los diálogos nativos del navegador, para homogeneizar la experiencia de usuario y los mensajes en español.
+- La librería de gráficos del frontend es Recharts (componentes declarativos para React: PieChart, BarChart, LineChart, etc.), integrada con Tailwind CSS y usada exclusivamente en el módulo Dashboard.
+- El módulo Dashboard se agrega como sección propia de navegación al mismo nivel que Productos, Atenciones, Pagos, Clientes, Citas y Auditoría; es de solo lectura y accesible para administrador y veterinario.
